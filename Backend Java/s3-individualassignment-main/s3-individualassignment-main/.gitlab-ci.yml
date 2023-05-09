@@ -1,0 +1,53 @@
+variables: 
+    GRADLE_OPTS: "-Dorg.gradle.daemon=false" 
+stages: 
+     - build 
+     - sonarqube-check
+     - test
+     
+build:
+     stage: build
+     script:
+        - ./gradlew assemble 
+            
+test: 
+    stage: test
+    script:
+        - ./gradlew test
+
+
+
+sonarqube-check:
+  stage: sonarqube-check
+  image: gradle:jre11-slim
+  script:
+    #  - cd Individual Assignment/Individual Assignment
+     - gradle sonarqube -D"sonar.projectKey=ticketsellingsystem" -D "sonar.host.url=http://localhost:9000/"  -D "sonar.            login=squ_a1ccc5ee8b94ac381dbaff775f4bf06acb681423"
+      -./gradlew test
+      -./gradlew jacocoTestReport
+      - ./gradlew.bat --stop
+  allow_failure: true
+
+
+
+# sonarqube-check:
+#   image: gradle:jre11-slim
+#   variables:
+#     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+#     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+#   cache:
+#     key: "${CI_JOB_NAME}"
+#     paths:
+#       - .sonar/cache
+#   script:
+#       - gradle sonarqube -D"sonar.projectKey=ticketsellingsystem" -D "sonar.host.url=http://localhost:9000/"  -D "sonar.            login=squ_a1ccc5ee8b94ac381dbaff775f4bf06acb681423"
+#        -./gradlew test
+#        -./gradlew jacocoTestReport
+#        -./gradlew.bat --stop
+#   allow_failure: true
+#   only:
+#     - main # or the name of your main branch
+
+
+  
+

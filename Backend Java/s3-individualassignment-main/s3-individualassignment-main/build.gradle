@@ -1,0 +1,89 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.3'
+	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+	id 'java'
+	id "io.freefair.lombok" version "6.5.1"
+	id 'jacoco'
+	id "org.sonarqube" version "3.4.0.2513"
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.flywaydb:flyway-mysql:9.5.1'
+	implementation 'org.flywaydb:flyway-core:9.5.1'
+	implementation 'mysql:mysql-connector-java:8.0.30'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'com.h2database:h2'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'mysql:mysql-connector-java:8.0.30'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.flywaydb:flyway-core:8.5.5'
+	implementation 'org.flywaydb:flyway-mysql:8.5.5'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+	implementation 'ch.qos.logback:logback-classic:1.2.11'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+//	implementation 'org.springframework.beans.factory'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'com.h2database:h2'
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.enabled true
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"**/configuration/*"
+			])
+		}))
+	}
+}
+project.tasks["sonarqube"].dependsOn "jacocoTestReport"
+
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "ticketsellingsystem"
+		property "sonar.qualitygate.wait", true
+		property "sonar.host.url","http://localhost:9000"
+		property "sonar.login","squ_a1ccc5ee8b94ac381dbaff775f4bf06acb681423"
+	}
+
+}
+
